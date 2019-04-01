@@ -6,9 +6,7 @@ using namespace std;
 int main()
 {
 
-
     ofstream fileo("result.txt");
-
 
     for (int a = 1; a < 500; ++a)
     {
@@ -19,15 +17,14 @@ int main()
 
             if (a*b == 1000*(a+b) - 500000)
             {
-                a = 500;
-                break;               
+                fileo << endl << a << " * " << b << " * " << 1000 - (a+b) << " = " << a*b*(1000-(a+b)) << endl;
+                fileo.close();
+                return 0;              
             }
         }
     }   
 
-
     fileo.close();
-
 
     return 0;
 }
