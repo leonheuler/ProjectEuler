@@ -60,12 +60,15 @@ int main()
         fileo << " digits: ";
         copy(digits.begin(), digits.end(), ostream_iterator<unsigned long long>(fileo, " "));
 
-        unsigned long long prod = 1;
-        for (vector<unsigned long long>::const_iterator it_d = digits.begin(); it_d != digits.end(); ++it_d)
-        {
-            prod *= *it_d;
-        }
 
+        unsigned long long prod = 1;
+
+        for (vector<unsigned long long>::const_iterator itt = digits.begin(); 
+                        itt != digits.end(); ++itt)
+        {
+            prod *= *itt;
+        }
+        // unsigned long long prod = accumulate(digits.begin(), digits.end(), 1, std::multiplies<unsigned long long>());
 
         fileo << "prod: " << setw(20) << prod << endl;
         
