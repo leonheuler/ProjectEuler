@@ -3,30 +3,33 @@
 #include <numeric>
 #include <ctime>
 #include <iterator>
+#include <cmath>
 
 using namespace std;
 
 int main()
 {
-    ofstream fileo("result.txt");
+    ofstream fileo("result2.txt");
 
     
     const int n = 2000000;
 
     vector<unsigned long long> primes = {2};
 
-    unsigned long long start_time = clock();
+    clock_t start_time = clock();
 
     for (int i = 3; i <= n; i++)
     {
         bool isPrime = true;
         for (vector<unsigned long long>::const_iterator it = primes.begin(); it != primes.end(); ++it)
         {
-            if (i % *it == 0)
+            if ( (i % *it == 0)  )
             {
                 isPrime = false;
                 break;
             }
+            if ( *it >= sqrt(i))
+                break;
         }
         if (isPrime)
         {
