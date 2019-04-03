@@ -2,55 +2,58 @@
 #include <vector>
 #include <iterator>
 #include <algorithm>
+#include <map>
 
 using namespace std;
 
-vector<unsigned long> find_dividers(unsigned long n)
+unsigned long create_triangle_number(unsigned long n)
 {
-    vector<unsigned long> ret = {1};
-    for (unsigned long i = 2; i < n; ++i)
+    return n * (n + 1) / 2;
+}
+
+int get_number_of_dividers(ostream& os, unsigned long a)
+{
+    map<int, int> prime_factorization;
+
+    unsigned long n = 2;
+    while (n <= a)
     {
-        if (n % i == 0)
-            ret.push_back(i);
+        if (a % n == 0)
+        {
+            ++prime_factorization[n];
+            a /= n;
+            n = 2;
+            continue;
+        }
+        n++;
     }
-    ret.push_back(n);
+
+    int ret = 1;
+    for (map<int, int>::const_iterator it = prime_factorization.begin(); it != prime_factorization.end(); ++it)
+    {   
+        os << it->first << "^" << it->second << " ";
+        ret *= it->second + 1;
+    }
+    os << ret;
     return ret;
 }
 
-unsigned long number_of_dividers(unsigned long n)
-{
-    unsigned long ret = 2;
-    for (unsigned long i = 2; i < n; ++i)
-    {
-        if (n % i == 0)
-            ret++;
-    }
-    return ret;
-}
-
-int main() 
+int main()
 {
     ofstream fileo("result.txt");
 
-    unsigned long n = 0;
-    unsigned long lim = 10000;
-
-    unsigned long maxdivnum = 1;
-
-    for (unsigned long i = 1; i < lim; ++i)
+    // a_n - n-th triangle number
+    unsigned long n = 1;
+    while (true)
     {
-        n = n + i;
-        unsigned long divnum = number_of_dividers(n);
-        fileo << n << " " << divnum << endl;
+        unsigned long a_i = create_triangle_number(n++);
+        fileo << a_i << " ";
+        int ans = get_number_of_dividers(fileo, a_i);
+        fileo << endl;
 
-        maxdivnum = max(maxdivnum, divnum);
-
-        if (maxdivnum > 500)   
+        if (ans > 500) 
             break;
-
     }
-
-    fileo << endl << maxdivnum;
 
     fileo.close();
     return 0;
