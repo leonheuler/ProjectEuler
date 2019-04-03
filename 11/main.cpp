@@ -32,26 +32,11 @@ int main()
             unsigned long prod_right = M[i][j] * M[i][j+1] * M[i][j+2] * M[i][j+3];
             unsigned long prod_down = M[i][j] * M[i+1][j] * M[i+2][j] * M[i+3][j];
             unsigned long prod_diag2 = M[i][j+(len-1)] * M[i+1][j+(len-1)-1] * M[i+2][j+(len-1)-2] * M[i+3][j+(len-1)-3];
-            maxprod = max(maxprod, max(prod_down, max(prod_diag, prod_right)));
-
-            fileo << prod_diag << " " << prod_right << " " << prod_down << endl;;
-
+            maxprod = max(maxprod, max(prod_right, max(prod_down, max(prod_diag, prod_diag2))));
         }
-        fileo << endl;
     }
 
-
     fileo << maxprod << endl;
-
-    // for (int i = 0; i < n; ++i)
-    // {
-    //     for (int j = 0; j < n; ++j)
-    //     {
-    //         fileo << M[i][j] << " ";
-    //     }
-
-    //     fileo << endl;
-    // }
 
     filei.close();
     fileo.close();
