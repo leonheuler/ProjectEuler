@@ -31,10 +31,10 @@ int get_number_of_dividers(ostream& os, unsigned long a)
     int ret = 1;
     for (map<int, int>::const_iterator it = prime_factorization.begin(); it != prime_factorization.end(); ++it)
     {   
-        os << it->first << "^" << it->second << " ";
+        os << it->first << "^" << it->second << " * ";
         ret *= it->second + 1;
     }
-    os << ret;
+    os << "1 (" << ret << " dividers)";
     return ret;
 }
 
@@ -47,7 +47,7 @@ int main()
     while (true)
     {
         unsigned long a_i = create_triangle_number(n++);
-        fileo << a_i << " ";
+        fileo << a_i << " = ";
         int ans = get_number_of_dividers(fileo, a_i);
         fileo << endl;
 
