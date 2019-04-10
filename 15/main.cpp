@@ -1,36 +1,50 @@
-
-// a(0,0)
-// r <=> a(1) += 1
-// d <=> a(2) += 1
-// end = (2,2)
-// (0, 0) (0,1) (0,2) (1, 2) (2,2);
-// (0, 0) (1, 0) (1,1) (2,1) (2,2)
-
-#include <utility>
+#include <fstream>
+#include <vector>
+#include <iterator>
+#include <numeric>
 
 using namespace std;
 
-typedef pair<int, int> coords_t;
-
-void move_right(coords_t& c)
-{
-    c.first++;
-}
-
-void move_down(coords_t& c)
-{
-    c.second++;
-}
+#define N 20
 
 int main()
 {
-    coords_t coords = {0, 0};
-    coords_t end_coords = {3,3};
 
-    while (coords != end_coords)
+    ofstream fileo("result.txt");
+
+    vector<vector<unsigned long long>> matrix(N - 1, vector<unsigned long long>(N, 1));
+
+    for (unsigned long long n = 1; n < N - 1; ++n)
     {
-        move_right(coords);
+
+        for (unsigned long long i = 0; i < N; ++i)
+        {
+            // matrix[n][i] = accumulate(matrix[n - 1].begin(), matrix[n - 1].begin() + i, 0);
+
+            unsigned long long sum = 0;
+            for (unsigned long long j = 0; j <= i; j++)
+            {
+                sum += matrix[n - 1][j];
+            }
+
+            matrix[n][i] = sum;
+
+            // fileo << matrix[n][i] << " ";
+        }
     }
+
+    unsigned long long sum = 0;
+    for (unsigned long long i = 0; i < N - 1; i++)
+    {
+        for (unsigned long long j = 0; j < N; j++)
+        {
+            sum += matrix[i][j];
+            fileo << matrix[i][j] << " ";
+        }
+        fileo << endl;
+    }
+
+    fileo << (sum + 1) * 2 << endl;
 
     return 0;
 }
