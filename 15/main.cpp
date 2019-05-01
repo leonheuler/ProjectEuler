@@ -17,7 +17,7 @@ int main()
     for (int n = 1; n < N - 1; ++n)
     {
 
-        for (int i = 0; i < N; ++i)
+        for (int i = 0; i < N; ++i) 
         {
 
             unsigned long long sum = 0;

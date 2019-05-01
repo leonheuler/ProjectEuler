@@ -34,7 +34,7 @@
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
-            "externalConsole": false,
+            "externalConsole": true,
             "preLaunchTask": "build",
             "internalConsoleOptions": "neverOpen"
         }
