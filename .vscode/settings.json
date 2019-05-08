@@ -54,6 +54,7 @@
         "xtr1common": "cpp",
         "xutility": "cpp",
         "optional": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "iostream": "cpp"
     }
 }
