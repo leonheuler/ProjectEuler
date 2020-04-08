@@ -12,48 +12,67 @@
 #include <algorithm>
 #include <map>
 #include <math.h>
+#include <ctime>
 
 using namespace std;
 
-bool is_amicable(int);
-vector<int> factorization(int);
-void print_mat(vector<vector<int>> &);
-void find_proper_divisors(vector<int>, vector<int> &);
-void sift_mat(vector<vector<int>> &);
+#define num_t unsigned long
+#define upper_limit 100000
+
+bool is_amicable(num_t);
+vector<num_t> factorization(num_t);
+void print_mat(vector<vector<num_t>> &);
+void find_proper_divisors(vector<num_t>, vector<num_t> &);
+void find_proper_divisors(num_t n, vector<num_t> &);
+void sift_mat(vector<vector<num_t>> &);
+
+#define PRINT_VEC(vec) \
+    copy(vec.begin(), vec.end(), ostream_iterator<num_t>(cout, " ")); \
+    cout << endl
+
+// #define RECURSIVE_MATRIX_GENERATION_METHOD
 
 int main()
 {
+    unsigned int start_time = clock();
+    vector<num_t> am_vec;
 
-    vector<int> am_vec;
-
-    for (int n = 1; n <= 10000; n++)
+    for (num_t n = 1; n <= upper_limit; n++)
         if (is_amicable(n))
             am_vec.push_back(n);
 
-    copy(am_vec.begin(), am_vec.end(), ostream_iterator<int>(cout, " "));
-    cout << endl;
+    PRINT_VEC(am_vec);
 
-    int ans = accumulate(am_vec.begin(), am_vec.end(), 0);
+    num_t ans = accumulate(am_vec.begin(), am_vec.end(), 0);
 
     cout << "Answer: " << ans << endl;
-
+    unsigned int end_time = clock();
+    cout << "Runtime: " << (end_time - start_time) / CLOCKS_PER_SEC << " sec" << endl;
     return 0;
 }
 
-bool is_amicable(int n)
+bool is_amicable(num_t n)
 {
-    vector<int> divs1 = {1};
-    // find_proper_divisors(factorization(n), divs1);
+    vector<num_t> divs1 = {1};
+#ifdef RECURSIVE_MATRIX_GENERATION_METHOD
+    find_proper_divisors(factorization(n), divs1);
+#else
     find_proper_divisors(n, divs1);
-    int sum1 = accumulate(divs1.begin(), divs1.end(), 0);
+#endif
+    num_t sum1 = accumulate(divs1.begin(), divs1.end(), 0);
     if (sum1 == 1)
         return false;
     cout << "d(" << n << ") = " << sum1 << endl;
 
-    vector<int> divs2 = {1};
-    // find_proper_divisors(factorization(sum1), divs2);
+    vector<num_t> divs2 = {1};
+
+#ifdef RECURSIVE_MATRIX_GENERATION_METHOD
+    find_proper_divisors(factorization(sum1), divs2);
+#else
     find_proper_divisors(sum1, divs2);
-    int sum2 = accumulate(divs2.begin(), divs2.end(), 0);
+#endif
+
+    num_t sum2 = accumulate(divs2.begin(), divs2.end(), 0);
     cout << "d(" << sum1 << ") = " << sum2 << endl;
 
     if ((n == sum2) && (n != sum1))
@@ -63,10 +82,10 @@ bool is_amicable(int n)
     return (n == sum2) && (n != sum1);
 }
 
-vector<int> factorization(int n)
+vector<num_t> factorization(num_t n)
 {
-    vector<int> ret;
-    int d = 2;
+    vector<num_t> ret;
+    num_t d = 2;
     while (n != 1)
     {
         if (n % d == 0)
@@ -77,32 +96,29 @@ vector<int> factorization(int n)
         else
             d++;
     }
-    /*
-    cout << "factorisation of " << n << ": ";
-    copy(ret.begin(), ret.end(), ostream_iterator<int>(cout, " "));
-    cout << endl;
-    */
+    // PRINT_VEC(ret);
     return ret;
 }
 
-void remove_diagonal(vector<vector<int>> &);
+void remove_diagonal(vector<vector<num_t>> &);
 
-/** Нахождение всех делителей числа меньших его самого, 
+/** Нахождение всех делителей числа меньших его самого методом рекурсивной генерации матриц, 
+ * строки которой содержат комбинации простых множителей
  * */
-void find_proper_divisors(vector<int> prime_factors_vec, vector<int> &proper_divisors)
+void find_proper_divisors(vector<num_t> prime_factors_vec, vector<num_t> &proper_divisors)
 {
 
     if (prime_factors_vec.size() <= 1)
         return;
 
-    vector<vector<int>> mat(prime_factors_vec.size(), prime_factors_vec); // Создаём квадратную матрицу, строки которой являются копиями prime_factor_vec
+    vector<vector<num_t>> mat(prime_factors_vec.size(), prime_factors_vec); // Создаём квадратную матрицу, строки которой являются копиями prime_factor_vec
 
-    remove_diagonal(mat); // Удаляем диагональ
+    remove_diagonal(mat); // Удаляем диагональ для получения различных комбинаций
     sift_mat(mat);        // Удаляем повторяющиеся строки
 
     for (auto row = mat.begin(); row != mat.end(); row++) // Идём по строкам матрицы
     {
-        int prod = accumulate(row->begin(), row->end(), 1, std::multiplies<int>()); // Находим очередной делитель, перемножая элементы строки
+        int prod = accumulate(row->begin(), row->end(), 1, std::multiplies<num_t>()); // Находим очередной делитель, перемножая элементы строки
 
         if (find(proper_divisors.begin(), proper_divisors.end(), prod) == proper_divisors.end()) // Если такого делителя ещё не было
             proper_divisors.push_back(prod);                                                     // добавляем в proper_divisors
@@ -113,27 +129,33 @@ void find_proper_divisors(vector<int> prime_factors_vec, vector<int> &proper_div
     }
 }
 
-void find_proper_divisors(int n, vector<int> &proper_divisors)
+/** Нахождение всех делителей числа меньших его самого методом перебора
+ * */
+void find_proper_divisors(num_t n, vector<num_t> &proper_divisors)
 {
-    for (int d = 2; d <= sqrt(n); d++)
-    {
+    for (num_t d = 2; d < n; d++)
         if (n % d == 0)
             proper_divisors.push_back(d);
-    }
+
+    // PRINT_VEC(proper_divisors);
 }
 
-void remove_diagonal(vector<vector<int>> &M)
+/** Удаление главной диагонали матрицы
+ * */
+void remove_diagonal(vector<vector<num_t>> &M)
 {
     int pos = 0;
-    for (vector<vector<int>>::iterator row = M.begin(); row != M.end(); row++)
+    for (vector<vector<num_t>>::iterator row = M.begin(); row != M.end(); row++)
     {
         row->erase(row->begin() + pos);
         pos++;
     }
 }
 
-// helper function
-void print_mat(vector<vector<int>> &M)
+
+/** Отрисовать матрицу
+ * */
+void print_mat(vector<vector<num_t>> &M)
 {
     for (auto row = M.begin(); row != M.end(); row++)
     {
@@ -146,7 +168,9 @@ void print_mat(vector<vector<int>> &M)
     cout << endl;
 }
 
-void sift_mat(vector<vector<int>> &M)
+/** Удаление повторяющихся строк матрицы %M
+ * */
+void sift_mat(vector<vector<num_t>> &M)
 {
     if (M.size() == 1)
         return;
