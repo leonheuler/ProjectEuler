@@ -30,13 +30,14 @@ int main()
     for (seed_t::size_type i = 0; i < rootSeed.size() - 1; ++i)
     {
         vector<block_t> row = grow_row(mat[i]);
-        print(row);
         mat.push_back(row);
+        print(row);
     }
 
     return 0;
 }
 
+/** expands seed to block */
 vector<block_t> grow_seed(const seed_t &rootSeed)
 {
     vector<block_t> ret;
@@ -52,6 +53,8 @@ vector<block_t> grow_seed(const seed_t &rootSeed)
     return ret;
 }
 
+/** walks through prev_row blocks, finds seeds 
+ * grows new blocks */
 vector<block_t> grow_row(const vector<block_t> &prev_row)
 {
     vector<block_t> ret;
@@ -68,7 +71,6 @@ size_t fact(num_t n)
 {
     return (n == 1 || n == 0) ? 1 : n * fact(n - 1);
 }
-
 
 void print(const vector<block_t> &v)
 {
