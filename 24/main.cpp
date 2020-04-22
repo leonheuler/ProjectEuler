@@ -24,6 +24,13 @@ ofstream fileo("result.txt");
 
 int main()
 {
+    /* easy way
+    vec_t root = {0,1,2,3,4,5,6,7,8,9};
+    for (long i = 0; i < 1e6 - 1; ++i)
+        next_permutation(root.begin(), root.end());
+    copy(root.begin(), root.end(), ostream_iterator<int>(cout));
+    return 0; */
+
     seed_t rootSeed = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     vector<vector<block_t>> mat = {grow_seed(rootSeed)};
     print(mat[0]);
