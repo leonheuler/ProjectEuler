@@ -7,99 +7,104 @@
  * 1×£1 + 1×50p + 2×20p + 1×5p + 1×2p + 3×1p
  * How many different ways can £2 be made using any number of coins? */
 
-#include <vector>
 #include <iostream>
+#include <vector>
 #include <numeric>
-#include <algorithm>
 #include <iterator>
+#include <algorithm>
 #include <fstream>
 
 std::ofstream fileo("output.txt");
 
-typedef unsigned int num_t;
+#define OSTREAM fileo
+// #define OSTREAM std::cout
+
+typedef unsigned long num_t;
 typedef std::vector<num_t> vec_t;
+typedef std::vector<vec_t> vvec_t;
 
-void next(vec_t &, num_t& );
-int sum(const vec_t &);
+void print(const vvec_t &);
 void print_vec(const vec_t &);
-void print_list(const std::vector<vec_t> &);
-bool is_odd(num_t);
+num_t sum(const vec_t &);
+bool transform(vec_t &);
 
-#define N 200
+#define N 20
 
 int main()
 {
-    vec_t coins = {1, 2, 5, 10, 20, 50, 100, 200};
-    vec_t way(N, 1);
-    std::vector<vec_t> ways = {way};
-    num_t odd_rem = 0;
-    while (way.size() != 2)
+
+    vec_t w(N, 1);
+    num_t rem = 1;
+
+    vvec_t ans = {w};
+    print_vec(w);
+
+    while (w[0] == 1)
     {
-        next(way, odd_rem);
-        // print_vec(way);
-        if (way.size() != 0)
-            ways.push_back(way);
+        num_t new_rem;
+        do
+        {
+            w.pop_back();
+            new_rem = N - sum(w);
+
+        } while (new_rem <= rem);
+
+        rem = new_rem;
+
+        vec_t tail;
+        // gen tale
+        if (rem % 2 == 0)
+        {
+            vec_t t(rem / 2, 2);
+            tail = t;
+        }
+        else if (rem >= 5)
+        {
+            vec_t t((rem - 5) / 2, 2);
+            t.push_back(5);
+            std::copy(t.rbegin(), t.rend(), std::back_inserter(tail));
+        }
+        else // rem == 3
+            continue;
+
+        if (tail.size() > 0)
+        {
+            do
+            {
+                std::copy(tail.begin(), tail.end(), std::back_inserter(w));
+                ans.push_back(w);
+            } while (transform(tail));
+
+            print_vec(w);
+        }
     }
-    print_list(ways);
-    fileo << "ways: " << ways.size() + 1;
+
     return 0;
 }
 
-void next(vec_t &v, num_t &prev_odd_rem)
+num_t sum(const vec_t &v)
 {
-
-    vec_t coins = {2, 5, 10, 20, 50, 100, 200};
-
-    num_t popped = v[v.size() - 1];
-    v.pop_back();
-    num_t rem = N - sum(v);
-    if (rem >= 7 && rem != prev_odd_rem && is_odd(rem))
-    {
-        if (prev_odd_rem % 5 == 0)
-            return next(v, prev_odd_rem);
-        // resize v
-        // create vec
-        // copy vec to v's back
-
-        vec_t::size_type vec_sz = (rem - 5) / 2;
-        vec_t vec(vec_sz, 2);
-        vec.push_back(5);
-        std::copy(vec.rbegin(), vec.rend(), std::back_inserter(v));
-        prev_odd_rem = rem;
-        return;
-    }
-
-    vec_t::size_type i = 0;
-    while (i != coins.size())
-        if (rem % coins[i] == 0 && coins[i] > popped)
-            break;
-        else
-            ++i;
-
-    if (i == coins.size())
-        return next(v, prev_odd_rem);
-    else
-        for (int j = 0; j < rem / coins[i]; ++j)
-            v.push_back(coins[i]);
-    return;
+    return std::accumulate(v.begin(), v.end(), (num_t)0);
 }
 
-int sum(const vec_t &v)
+bool transform(vec_t &v, const num_t &r)
 {
-    return std::accumulate(v.begin(), v.end(), 0);
+
+    return false;
 }
 
 void print_vec(const vec_t &v)
 {
-    std::copy(v.begin(), v.end(), std::ostream_iterator<num_t>(fileo, " "));
-    fileo << std::endl;
-}
-void print_list(const std::vector<vec_t> &list)
-{
-    std::for_each(list.begin(), list.end(), print_vec);
+    std::copy(v.begin(), v.end(), std::ostream_iterator<num_t>(OSTREAM, " "));
+    OSTREAM << std::endl;
 }
 
-bool is_odd(num_t n)
+void print(const vvec_t &vv)
 {
-    return n % 2 != 0;
+    std::for_each(vv.begin(), vv.end(), print_vec);
+}
+
+bool is_odd_and_greater_3(const num_t &n)
+{
+    return n > 3 && n % 2 != 0;
 }
