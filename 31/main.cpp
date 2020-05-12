@@ -8,103 +8,38 @@
  * How many different ways can £2 be made using any number of coins? */
 
 #include <iostream>
-#include <vector>
-#include <numeric>
-#include <iterator>
-#include <algorithm>
-#include <fstream>
 
-std::ofstream fileo("output.txt");
-
-#define OSTREAM fileo
-// #define OSTREAM std::cout
-
-typedef unsigned long num_t;
-typedef std::vector<num_t> vec_t;
-typedef std::vector<vec_t> vvec_t;
-
-void print(const vvec_t &);
-void print_vec(const vec_t &);
-num_t sum(const vec_t &);
-bool transform(vec_t &);
-
-#define N 20
 
 int main()
 {
+    int ans = 0;
 
-    vec_t w(N, 1);
-    num_t rem = 1;
-
-    vvec_t ans = {w};
-    print_vec(w);
-
-    while (w[0] == 1)
+    for (int c1 = 0; c1 <= 200; ++c1)
     {
-        num_t new_rem;
-        do
+        for (int c2 = 0; c2 <= 100; ++c2)
         {
-            w.pop_back();
-            new_rem = N - sum(w);
-
-        } while (new_rem <= rem);
-
-        rem = new_rem;
-
-        vec_t tail;
-        // gen tale
-        if (rem % 2 == 0)
-        {
-            vec_t t(rem / 2, 2);
-            tail = t;
-        }
-        else if (rem >= 5)
-        {
-            vec_t t((rem - 5) / 2, 2);
-            t.push_back(5);
-            std::copy(t.rbegin(), t.rend(), std::back_inserter(tail));
-        }
-        else // rem == 3
-            continue;
-
-        if (tail.size() > 0)
-        {
-            do
+            for (int c5 = 0; c5 <= 40; ++c5)
             {
-                std::copy(tail.begin(), tail.end(), std::back_inserter(w));
-                ans.push_back(w);
-            } while (transform(tail));
-
-            print_vec(w);
+                for (int c10 = 0; c10 <= 20; ++c10)
+                {
+                    for (int c20 = 0; c20 <= 10; ++c20)
+                    {
+                        for (int c50 = 0; c50 <= 4; ++c50)
+                        {
+                            for (int c100 = 0; c100 <= 2; ++c100)
+                            {
+                                for (int c200 = 0; c200 <= 1; ++c200)
+                                    if (1*c1 + 2*c2 +5*c5 + 10*c10 + 20*c20 + 50*c50 + 100*c100 + 200*c200 == 200)
+                                        ++ans;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
-
+    std::cout << ans << std::endl;
     return 0;
 }
 
-num_t sum(const vec_t &v)
-{
-    return std::accumulate(v.begin(), v.end(), (num_t)0);
-}
 
-bool transform(vec_t &v, const num_t &r)
-{
-
-    return false;
-}
-
-void print_vec(const vec_t &v)
-{
-    std::copy(v.begin(), v.end(), std::ostream_iterator<num_t>(OSTREAM, " "));
-    OSTREAM << std::endl;
-}
-
-void print(const vvec_t &vv)
-{
-    std::for_each(vv.begin(), vv.end(), print_vec);
-}
-
-bool is_odd_and_greater_3(const num_t &n)
-{
-    return n > 3 && n % 2 != 0;
-}
