@@ -4,10 +4,12 @@
 
 typedef unsigned long num_t;
 
-bool is_pandigital(std::string s)
-{
+bool is_pandigital(const num_t &n)
+{   
+    std::string s = std::to_string(n);
+    const char max_digit = s[0];
     std::sort(s.begin(), s.end());
-    return s.find('0') != std::string::npos ? false : std::unique(s.begin(), s.end()) == s.end();
+    return s.find('0') != std::string::npos || s[s.size()-1] > max_digit ? false : std::unique(s.begin(), s.end()) == s.end();
 }
 
 num_t expand(num_t n)
@@ -27,7 +29,7 @@ int main()
     for (num_t n = 1; n < 10000; ++n)
     {
         num_t pan_cand = expand(n);
-        if (is_pandigital(std::to_string(pan_cand)))
+        if (is_pandigital(pan_cand))
             max = std::max(max, pan_cand);
     }
     std::cout << max << std::endl;
