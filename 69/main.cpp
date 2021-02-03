@@ -12,8 +12,8 @@ int main()
 
     ofstream fileo("result.txt");
 
-    const int N = 1000;
-    const int Nstart = 1;
+    const int N = 510511;
+    const int Nstart = 510509;
     double n_div_phi = 0;
     // перебор всех чисел от 1 до N
     for (int i = Nstart; i <= N; i++)
@@ -29,8 +29,8 @@ int main()
         }
 
         n_div_phi = (double)i / (double)phi; 
-        // fileo << "n: " << i << " phi(n): " << phi << " n/phi(n): " << n_div_phi << endl;
-        fileo <</*phi << " " */ n_div_phi << endl;
+        fileo << "n: " << i << " phi(n): " << phi << " n/phi(n): " << n_div_phi << endl;
+        // fileo <</*phi << " " */ n_div_phi << endl;
     }
 
     fileo.close();
